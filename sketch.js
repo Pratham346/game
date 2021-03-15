@@ -1,5 +1,6 @@
-var canvas, backgroundImage;
+var canvas;
 
+var playerArray=[];
 var carsAtEnd=0;
 var gameState = 0;
 var playerCount;
@@ -9,25 +10,50 @@ var database;
 
 var form, player, game;
 
-var cars, car1, car2, car3, car4;
+// Variable for background and winner Image
 
-var track, car1_img, car2_img, car3_img, car4_img;
+var bg, bgImg, bg1, bg1Img, bg2, bg2Img, winner, winnerImg;
+
+// Variable for Player1
+
+var player1, player1Img, firebeam, firebeamImg, fireblast, fireblastImg, incinerate, incinerateImg ;
+
+// Variable for Player2
+
+var player2, player2Img, firespin, firespinImg, flamethrower, flamethrowerImg, slash, slashImg;
 
 function preload(){
-  // track = loadImage("../images/track.jpg");
-  // car1_img = loadImage("../images/car1.png");
-  // car2_img = loadImage("../images/car2.png");
-  // car3_img = loadImage("../images/car3.png");
-  // car4_img = loadImage("../images/car4.png");
-  // ground = loadImage("../images/ground.png");
+
+// Loading Images for background and winner
+
+  bgImg = loadImage("bg_images/bg.jpg");
+  bg1Img = loadImage("bg_images/bg1.jpg");
+  bg2Img = loadImage("bg_images/bg2.jpg");
+  bgImg = loadImage("bg_images/bg.jpg");
+  winnerImg = loadImage("bg_images/winner.png");
+
+  // Loading Images for Player1 and player1 attacks
+
+  player1Img = loadImage("p1/player_1.png");
+  firebeamImg = loadImage("p1/Fire_beam.png");
+  fireblastImg = loadImage("p1/Fire_blast.png");
+  incinerateImg = loadImage("p1/Incinerate.png");
+
+  // Loading Images for Player2 and player2 attacks
+
+  player2Img = loadImage("p2/charizard.png");
+  firespinImg = loadImage("p2/Fire_spin.png");
+  flamethrowerImg = loadImage("p2/Flame_thrower.png");
+  slashImg = loadImage("p2/slash.png");
 }
 
 function setup(){
-  canvas = createCanvas(displayWidth - 20, displayHeight-30);
+  canvas = createCanvas(displayWidth, displayHeight);
   database = firebase.database();
   game = new Game();
   game.getState();
   game.start();
+
 }
 
 

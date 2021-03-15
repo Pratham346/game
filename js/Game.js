@@ -29,22 +29,19 @@ class Game {
       form.display();
     }
 
-    car1 = createSprite(100,200);
-    //car1.addImage("car1",car1_img);
-    car2 = createSprite(300,200);
-   // car2.addImage("car2",car2_img);
-    // car3 = createSprite(500,200);
-    // car3.addImage("car3",car3_img);
-    // car4 = createSprite(700,200);
-    // car4.addImage("car4",car4_img);
-    cars = [car1, car2];
+    player1 = createSprite(100,200);
+    player1.addImage(player1Img);
+    player2 = createSprite(300,200);
+    player2.addImage(player2Img);
+    
+   playerArray = [player1, player2];
   }
 
   play(){
     form.hide();
     
     Player.getPlayerInfo();
-    player.getCarsAtEnd();
+    //player.getplayerArrayAtEnd();
 
     if(allPlayers !== undefined){
       background(rgb(198,135,103));
@@ -55,7 +52,7 @@ class Game {
       //index of the array
       var index = 0;
 
-      //x and y position of the cars
+      //x and y position of the playerArray
       var x = 200 ;
       var y;
 
@@ -63,27 +60,36 @@ class Game {
         //add 1 to the index for every loop
         index = index + 1 ;
 
-        //position the cars a little away from each other in x direction
+        //position the playerArray a little away from each other in x direction
         if (index ===1)
         {
           x=200;
+        //  player.x = x;
         }else{
           x = x + width - 400;
+         // player.x = width - 200;
         }
         
-        //use data form the database to display the cars in y direction
+        //use data form the database to display the playerArray in y direction
         y = allPlayers[plr].y;
-        cars[index-1].x = x;
-        cars[index-1].y = y;
+        playerArray[index-1].x = x;
+        playerArray[index-1].y = y;
 
         if (index === player.index){
           stroke(10);
           fill("red");
           ellipse(x, y, 100, 100);
           camera.position.x = displayWidth/2;
-          camera.position.y = cars[index-1].y;
+          camera.position.y = playerArray[index-1].y;
         }
-       
+       if(playerArray[index-1].chosen == "Fire Beam"){
+         console.log("image");
+         image(firebeamImg, playerArray[index-1].x, playerArray[index-1].y + 200, 20, 20);
+       }
+       if(playerArray[index-1].chosen == "Fire Spin" ){
+        console.log("image");
+        image(firespinImg, playerArray[index-1].x, playerArray[index-1].y + 200, 20, 20);
+      }
         //textSize(15);
         //text(allPlayers[plr].name + ": " + allPlayers[plr].distance, 120,display_position)
       }
@@ -98,11 +104,51 @@ class Game {
       player.y +=10;
       player.update();
     }
+if(keyIsDown(87)){
+      if (player.index === 1){
+        player.chosen ="Fire Beam"
+       var weapon = new Weapon(player.x, player.y, 30, firebeamImg, 10);
+        player.update();
+      }
+      if (player.index === 2){
+        player.chosen = "Fire Spin"
+        var weapon = new Weapon(player.x, player.y, 50, firespinImg, -10);
+        player.update();
+      }
+}
+if(keyIsDown(65)){
+  if (player.index === 1){
+    player.chosen = "Fire Blast"
+    var weapon = new Weapon(player.x, player.y, 60, fireblastImg, 10);
+    player.update();
+  }
+  if (player.index === 2){
+    player.chosen = "Flame Thrower"
+    var weapon = new Weapon(player.x, player.y, 50, flamethrowerImg, -10);
+    player.update();
+  }
+}
+if(keyIsDown(83)){
+  if (player.index === 1){
+    player.chosen = "Incinerate"
+    var weapon = new Weapon(player.x, player.y, 60, incinerateImg, 10);
+    player.update();
+  }
+  if (player.index === 2){
+    player.chosen = "Slash"
+    var weapon = new Weapon(player.x, player.y, 50, slashImg, -10);
+    player.update();
+  }
+}
+
+
+
+
 
     if(player.distance > 3860){
       gameState = 2;
-     player.rank = 1+ carsAtEnd;
-      Player.updateCarsAtEnd(player.rank);
+     player.rank = 1+ playerArrayAtEnd;
+      Player.updateplayerArrayAtEnd(player.rank);
 player.update();
     }
    
@@ -122,7 +168,7 @@ player.update();
       //index of the array
       var index = 0;
 
-      //x and y position of the cars
+      //x and y position of the playerArray
       var x = 175 ;
       var y;
 
@@ -131,12 +177,12 @@ player.update();
         
         index = index + 1 ;
 
-        //position the cars a little away from each other in x direction
+        //position the playerArray a little away from each other in x direction
         x = x + 200;
-        //use data form the database to display the cars in y direction
+        //use data form the database to display the playerArray in y direction
         y = displayHeight - allPlayers[plr].distance;
-        cars[index-1].x = x;
-        cars[index-1].y = y;
+        playerArray[index-1].x = x;
+        playerArray[index-1].y = y;
 
         var element = createElement("h4");
         if (allPlayers[plr].rank != 0){
@@ -154,7 +200,7 @@ player.update();
           fill("red");
           ellipse(x, y, 100, 100);
           camera.position.x = displayWidth/2;
-          camera.position.y = cars[index-1].y;
+          camera.position.y = playerArray[index-1].y;
         }else{
           element.style("color", "black");
         }

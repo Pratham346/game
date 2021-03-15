@@ -5,6 +5,7 @@ class Player {
     this.health = 350;
     this.name = null;
     this.chosen=null;
+    this.x=0;
   }
 
   getCount(){
@@ -39,6 +40,7 @@ class Player {
     database.ref(playerIndex).set({
       name:this.name,
       y:this.y,
+      x:this.x,
       health:this.health,
       chosen:this.chosen,
     
