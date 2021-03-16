@@ -1,5 +1,6 @@
 var canvas;
 
+var playState = "ready";
 var playerArray=[];
 var carsAtEnd=0;
 var gameState = 0;
@@ -7,6 +8,7 @@ var playerCount;
 var allPlayers;
 var distance = 0;
 var database;
+var weapon1, weapon2;
 
 var form, player, game;
 
