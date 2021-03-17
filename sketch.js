@@ -9,6 +9,7 @@ var allPlayers;
 var distance = 0;
 var database;
 var weapon1, weapon2;
+var weapon1_created, weapon2_created;
 
 var form, player, game;
 
