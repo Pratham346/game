@@ -32,21 +32,19 @@ class Game {
     player2.addImage(player2Img);
 
     playerArray = [player1, player2];
+    weapon1 = null;
+    weapon2 = null;
+    weapons = [weapon1, weapon2];
   }
 
   play() {
     form.hide();
 
     Player.getPlayerInfo();
-    //player.getplayerArrayAtEnd();
-
+    player.getPlayerAtEnd();
     if (allPlayers !== undefined) {
       background(rgb(198, 135, 103));
-      // image(track, 0,-displayHeight*4,displayWidth, displayHeight*5);
 
-      //var display_position = 100;
-
-      //index of the array
       var index = 0;
 
       //x and y position of the playerArray
@@ -60,142 +58,146 @@ class Game {
         //position the playerArray a little away from each other in x direction
         if (index === 1) {
           x = 200;
-          //  player.x = x;
         } else {
           x = x + width - 400;
-          // player.x = width - 200;
         }
 
-        //use data form the database to display the playerArray in y direction
         y = allPlayers[plr].y;
         playerArray[index - 1].x = x;
         playerArray[index - 1].y = y;
 
+        stroke(10);
+        fill("red");
+        text(allPlayers[plr].health, x, y - 200);
+        text(allPlayers[plr].score, x, y - 250);
         if (index === player.index) {
           stroke(10);
           fill("red");
           ellipse(x, y, 100, 100);
+
+          player.health = allPlayers[plr].health;
           camera.position.x = displayWidth / 2;
           camera.position.y = playerArray[index - 1].y;
-        }
-        //if () {}
-        if (!weapon1_created) {
-          if (allPlayers[plr].chosen == "Fire Beam") {
-            weapon1 = new Weapon(player.x, player.y, 30, firebeamImg, 10);
-            weapon1_created = true;
+          //destroy weapon if out of screen
+          if (weapons[index - 1]) {
+            weapons[index - 1].body.x += weapons[index - 1].velocityX;
 
-            //playState = "attack";
+            player.weaponX = weapons[index - 1].body.x;
+            player.weaponY = weapons[index - 1].body.y;
+            player.update();
+            if (
+              weapons[index - 1].body.x >= width ||
+              weapons[index - 1].body.x <= 0
+            ) {
+              weapons[index - 1].body.destroy();
+              weapons[index - 1] = null;
+              player.weaponActive = false;
+              player.update();
+              player.state = "ready";
+            }
+            //make weapon move and update coordinated to db
+            //console.log( weapons[index - 1].x+","+ weapons[index - 1].velocity)
           }
-          if (allPlayers[plr].chosen == "Incinerate") {
-            weapon1 = new Weapon(player.x, player.y, 60, incinerateImg, 10);
-            weapon1_created = true;
+        } else if (player.index != index) {
+          //destroy weapon if touches enemy
 
-            //playState = "attack";
+          if (
+            weapons[player.index - 1] &&
+            weapons[player.index - 1].body.isTouching(playerArray[index - 1])
+          ) {
+            var health =
+              allPlayers[plr].health - weapons[player.index - 1].damage;
+            weapons[player.index - 1].body.destroy();
+            weapons[player.index - 1] = null;
+            console.log("destroy weapon after hit");
+            player.updateEnemyHealth(index, health);
+            console.log("update" + health);
+            player.state = "ready";
+            player.weaponActive = false;
+            player.update();
+          }
+          //reading and updating enemy weapon position
+          if (weapons[index - 1]) {
+            weapons[index - 1].body.x = allPlayers[plr].weaponX;
+            weapons[index - 1].body.y = allPlayers[plr].weaponY;
+          }
+        }
+        if (weapons[index - 1] && !allPlayers[plr].weaponActive) {
+          weapons[index - 1].body.destroy();
+          weapons[index - 1] = null;
+          // player.state = "ready";
+        }
+
+        //createWeapons
+
+        if (
+          !weapons[index - 1] &&
+          allPlayers[plr].weaponActive &&
+          allPlayers[plr].state == "thrown"
+        ) {
+          //console.log("create weapon");
+          if (allPlayers[plr].chosen == "Fire Beam") {
+            weapons[index - 1] = new Weapon(x, y, 30, firebeamImg, 10);
+            //weapon1_created = true;
+            //player.state = "attack";
           }
 
           if (allPlayers[plr].chosen == "Fire Blast") {
-
-            weapon1 = new Weapon(player.x, player.y, 60, fireblastImg, 10);
-            weapon1_created = true;
-
-
-            // playState = "attack";
+            weapons[index - 1] = new Weapon(x, y, 60, fireblastImg, 10);
+            //weapon1_created = true;
+            //player.state = "attack";
           }
-          if (!weapon2_created) {
-            if (allPlayers[plr].chosen == "Fire Spin") {
-              weapon2 = new Weapon(player.x, player.y, 50, firespinImg, -10);
-              weapon2_created = true;
+          if (allPlayers[plr].chosen == "Incinerate") {
+            weapons[index - 1] = new Weapon(x, y, 60, incinerateImg, 10);
+            //player.state = "attack";
 
-              //playState = "attack";
-            }
-            if (allPlayers[plr].chosen == "Flame Thrower") {
-              weapon2 = new Weapon(player.x, player.y, 50, flamethrowerImg, -10);
-              weapon2_created = true;
-
-              //playState = "attack";
-            }
-
-            if (allPlayers[plr].chosen == "Slash") {
-              weapon2 = new Weapon(player.x, player.y, 50, slashImg, -10);
-              weapon2_created = true;
-
-              //playState = "attack";
-            }
+            //weapon1_created = true;
           }
-          if (weapon1_created) {
 
-            if (allPlayers[plr].chosen == "Fire Beam") {
+          //player.weapon = weapon1;
 
-              image(
-                firebeamImg,
-                playerArray[index - 1].x,
-                playerArray[index - 1].y + 200,
-                20,
-                20
-              );
-              //playState = "attack";
-            }
-            if (allPlayers[plr].chosen == "Incinerate") {
+          if (allPlayers[plr].chosen == "Fire Spin") {
+            weapons[index - 1] = new Weapon(x, y, 50, firespinImg, -10);
+            //player.state = "attack";
 
-              image(
-                incinerateImg,
-                playerArray[index - 1].x,
-                playerArray[index - 1].y + 200,
-                20,
-                20
-              );
-              //playState = "attack";
-            }
+            // weapon2_created = true;
           }
-          if (weapon2_created) {
+          if (allPlayers[plr].chosen == "Flame Thrower") {
+            weapons[index - 1] = new Weapon(x, y, 50, flamethrowerImg, -10);
+            //player.state = "attack";
 
-            if (allPlayers[plr].chosen == "Fire Blast") {
+            //weapon2_created = true;
+          }
 
+          if (allPlayers[plr].chosen == "Slash") {
+            weapons[index - 1] = new Weapon(x, y, 50, slashImg, -10);
+            //player.state = "attack";
 
-              image(
-                fireblastImg,
-                playerArray[index - 1].x,
-                playerArray[index - 1].y + 200,
-                20,
-                20
-              );
-              // playState = "attack";
-            }
-            if (allPlayers[plr].chosen == "Fire Spin") {
+            // weapon2_created = true;
+          }
+          // player.weapon = weapons[player.index - 1];
+        }
+        //player.weapon = weapon2;
 
-
-              image(
-                firespinImg,
-                playerArray[index - 1].x,
-                playerArray[index - 1].y + 200,
-                20,
-                20
-              );
-              //playState = "attack";
-            }
-            if (allPlayers[plr].chosen == "Flame Thrower") {
-
-              image(
-                flamethrowerImg,
-                playerArray[index - 1].x,
-                playerArray[index - 1].y + 200,
-                20,
-                20
-              );
-              //playState = "attack";
-            }
-
-            if (allPlayers[plr].chosen == "Slash") {
-
-              image(
-                slashImg,
-                playerArray[index - 1].x,
-                playerArray[index - 1].y + 200,
-                20,
-                20
-              );
-              //playState = "attack";
-            }
+        //showChosenWeapon
+        if (allPlayers[plr].weaponActive) {
+          if (allPlayers[plr].chosen == "Fire Beam") {
+            image(firebeamImg, x, y + 200, 20, 20);
+          }
+          if (allPlayers[plr].chosen == "Fire Spin") {
+            image(firespinImg, x, y + 200, 20, 20);
+          }
+          if (allPlayers[plr].chosen == "Fire Blast") {
+            image(fireblastImg, x, y + 200, 20, 20);
+          }
+          if (allPlayers[plr].chosen == "Flame Thrower") {
+            image(flamethrowerImg, x, y + 200, 20, 20);
+          }
+          if (allPlayers[plr].chosen == "Incinerate") {
+            image(incinerateImg, x, y + 200, 20, 20);
+          }
+          if (allPlayers[plr].chosen == "Slash") {
+            image(slashImg, x, y + 200, 20, 20);
           }
         }
       }
@@ -211,42 +213,13 @@ class Game {
       player.update();
     }
 
-    if (playState === "thrown") {
-      if (weapon2) {
-        if (weapon2.body.x >= width || weapon2.body.x <= 0) {
-          playState = "ready";
-        }
-      }
-      if (weapon1) {
-        if (weapon1.body.x >= width || weapon1.body.x <= 0) {
-          playState = "ready";
-        }
-      }
-
-      if (weapon1 && weapon1.body.isTouching(player2) && player.index === 2) {
-        player.health = player.health - weapon1.damage;
-        playState = "ready";
-        weapon1.body.destroy();
-        weapon1_created = false;
-        console.log(player.health);
-        player.update();
-      }
-      if (weapon2 && weapon2.body.isTouching(player1) && player.index === 1) {
-        player.health = player.health - weapon2.damage;
-        playState = "ready";
-        weapon2.body.destroy();
-        weapon2_created = false;
-        console.log(player.health);
-        player.update();
-      }
-    }
     this.chooseWeapon();
 
-    if (player.distance > 3860) {
-      gameState = 2;
-      player.rank = 1 + playerArrayAtEnd;
-      Player.updateplayerArrayAtEnd(player.rank);
-      player.update();
+    if (player.health <= 0) {
+      // gameState = 2;
+      this.update(2);
+      Player.updatePlayerAtEnd(player.index);
+      console.log("lossing Player" + player.index);
     }
 
     drawSprites();
@@ -254,87 +227,55 @@ class Game {
 
   end() {
     console.log("Game Ended");
-    console.log(player.rank);
+  
+    if (playerAtEnd == 1) {
+      var bk = "bg_image/bg2.jpg";
 
-    if (allPlayers !== undefined) {
-      background(rgb(198, 135, 103));
-      // image(track, 0,-displayHeight*4,displayWidth, displayHeight*5);
-
-      //var display_position = 100;
-
-      //index of the array
-      var index = 0;
-
-      //x and y position of the playerArray
-      var x = 175;
-      var y;
-
-      for (var plr in allPlayers) {
-        //add 1 to the index for every loop
-
-        index = index + 1;
-
-        //position the playerArray a little away from each other in x direction
-        x = x + 200;
-        //use data form the database to display the playerArray in y direction
-        y = displayHeight - allPlayers[plr].distance;
-        playerArray[index - 1].x = x;
-        playerArray[index - 1].y = y;
-
-        var element = createElement("h4");
-        if (allPlayers[plr].rank != 0) {
-          element.position(displayWidth / 2, allPlayers[plr].rank * 40);
-          element.html(allPlayers[plr].name + ":" + allPlayers[plr].rank);
-        }
-
-        if (index === player.index) {
-          element.style("color", "red");
-          stroke(10);
-          fill("red");
-          ellipse(x, y, 100, 100);
-          camera.position.x = displayWidth / 2;
-          camera.position.y = playerArray[index - 1].y;
-        } else {
-          element.style("color", "black");
-        }
-
-        //textSize(15);
-        //text(allPlayers[plr].name + ": " + allPlayers[plr].distance, 120,display_position)
-      }
+    } else {
+      var bk = "bg_image/bg1.jpg";
     }
 
-    drawSprites();
+    var backgroundimg = loadImage(bk);
+    background(backgroundimg);
+
   }
   chooseWeapon() {
-    if (playState === "ready") {
+    if (player.state === "ready") {
       if (player.index === 1) {
         if (keyIsDown(87)) {
           player.chosen = "Fire Beam";
-          playState = "thrown";
+          player.state = "thrown";
+          player.weaponActive = true;
         }
         if (keyIsDown(65)) {
           player.chosen = "Fire Blast";
-          playState = "thrown";
+          player.state = "thrown";
+          player.weaponActive = true;
         }
         if (keyIsDown(68)) {
           player.chosen = "Incinerate";
-          playState = "thrown";
+          player.state = "thrown";
+          player.weaponActive = true;
         }
         player.update();
       }
       if (player.index === 2) {
         if (keyIsDown(87)) {
           player.chosen = "Fire Spin";
-          playState = "thrown";
+          player.state = "thrown";
+          player.weaponActive = true;
         }
         if (keyIsDown(65)) {
           player.chosen = "Flame Thrower";
-          playState = "thrown";
+          player.state = "thrown";
+          player.weaponActive = true;
         }
         if (keyIsDown(68)) {
           player.chosen = "Slash";
-          playState = "thrown";
+          player.state = "thrown";
+          player.weaponActive = true;
         }
+
         player.update();
       }
     }
