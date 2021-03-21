@@ -1,15 +1,15 @@
 var canvas;
 
 var playState = "ready";
-var playerArray=[];
-var carsAtEnd=0;
+var playerArray = [];
+var  playerAtEnd= 0;
 var gameState = 0;
 var playerCount;
 var allPlayers;
 var distance = 0;
 var database;
 var weapon1, weapon2;
-
+var weapons = [];
 var form, player, game;
 
 // Variable for background and winner Image
@@ -18,18 +18,32 @@ var bg, bgImg, bg1, bg1Img, bg2, bg2Img, winner, winnerImg;
 
 // Variable for Player1
 
-var player1, player1Img, firebeam, firebeamImg, fireblast, fireblastImg, incinerate, incinerateImg ;
+var player1,
+  player1Img,
+  firebeam,
+  firebeamImg,
+  fireblast,
+  fireblastImg,
+  incinerate,
+  incinerateImg;
 
 // Variable for Player2
 
-var player2, player2Img, firespin, firespinImg, flamethrower, flamethrowerImg, slash, slashImg;
+var player2,
+  player2Img,
+  firespin,
+  firespinImg,
+  flamethrower,
+  flamethrowerImg,
+  slash,
+  slashImg;
 
-function preload(){
+function preload() {
+  // Loading Images for background and winner
 
-// Loading Images for background and winner
-
-  bgImg = loadImage("bg_images/bg.jpg");
+  bgImg = loadImage("bg_images/bg.jpg"); 
   bg1Img = loadImage("bg_images/bg1.jpg");
+ 
   bg2Img = loadImage("bg_images/bg2.jpg");
   bgImg = loadImage("bg_images/bg.jpg");
   winnerImg = loadImage("bg_images/winner.png");
@@ -49,25 +63,23 @@ function preload(){
   slashImg = loadImage("p2/slash.png");
 }
 
-function setup(){
+function setup() {
   canvas = createCanvas(displayWidth, displayHeight);
   database = firebase.database();
   game = new Game();
   game.getState();
   game.start();
-
 }
 
-
-function draw(){
-  if(playerCount === 2){
+function draw() {
+  if (playerCount === 2&&gameState==0) {
     game.update(1);
   }
-  if(gameState === 1){
+  if (gameState === 1) {
     clear();
     game.play();
   }
-  if(gameState === 2){
+  if (gameState === 2) {
     game.end();
   }
 }
