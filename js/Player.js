@@ -1,7 +1,10 @@
 class Player {
   constructor() {
     this.index = null;
-    this.y = height/2;
+
+    
+   this.y = height/2;
+
     this.health = 350;
     this.name = null;
     this.weaponActive = false;
@@ -20,7 +23,9 @@ class Player {
   }
 
   getPlayerAtEnd() {
+
     var  playerAtEndRef = database.ref("playerAtEnd");
+
     playerAtEndRef.on("value", (data) => {
       playerAtEnd = data.val();
     });
@@ -34,13 +39,18 @@ class Player {
 
   static updatePlayerAtEnd(count) {
     database.ref("/").update({
+
       playerAtEnd : count,
+
     });
   }
 
   update() {
     var playerIndex = "players/player" + this.index;
-    database.ref(playerIndex).set({
+
+    database.ref(playerIndex).update({
+
+  
       name: this.name,
       y: this.y,
       x: this.x,

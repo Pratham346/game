@@ -1,7 +1,5 @@
 class Game {
-  constructor() {
-
-  }
+  constructor() {}
 
   getState() {
     var gameStateRef = database.ref("gameState");
@@ -10,8 +8,12 @@ class Game {
     });
   }
 
-  update(state) {
+
+ 
+
+ async update(state) {
     database.ref("/").update({
+
       gameState: state,
     });
   }
@@ -47,6 +49,10 @@ class Game {
     Player.getPlayerInfo();
     player.getPlayerAtEnd();
     if (allPlayers !== undefined) {
+
+      
+
+
       // background(rgb(198, 135, 103));
       background("white");
       push();
@@ -57,6 +63,7 @@ class Game {
       rect(0, height * 0.5, width, height * 4.5);
       pop();
       image(bgImg, 0,0, width, height);
+
       var index = 0;
 
       //x and y position of the playerArray
@@ -78,17 +85,28 @@ class Game {
         playerArray[index - 1].x = x;
         playerArray[index - 1].y = y;
 
+
+        
+        //show helth and score
+
         stroke(50);
         fill("white");
+
         text(allPlayers[plr].health, x, y - 200);
         text(allPlayers[plr].score, x, y - 250);
         if (index === player.index) {
           stroke(10);
           fill("red");
-          rect(x, y, 5, 5);
+
+          
+
+          player.health = allPlayers[plr].health;
+          console.log(player.health + "," + allPlayers[plr].health);
+
          
           player.health = allPlayers[plr].health;
           console.log(player.health);
+
           camera.position.x = displayWidth / 2;
           camera.position.y = playerArray[index - 1].y;
           //destroy weapon if out of screen
@@ -124,6 +142,7 @@ class Game {
             weapons[player.index - 1] = null;
             console.log("destroy weapon after hit");
             player.updateEnemyHealth(index, health);
+
             console.log("update" + health);
             player.state = "ready";
             player.weaponActive = false;
@@ -150,7 +169,10 @@ class Game {
         ) {
           //console.log("create weapon");
           if (allPlayers[plr].chosen == "Fire Beam") {
+
+          
             weapons[index - 1] = new Weapon(x, y, 60, firebeamImg, 10, 1);
+
 
 
 
@@ -159,13 +181,19 @@ class Game {
           }
 
           if (allPlayers[plr].chosen == "Fire Blast") {
+
+           
+
             weapons[index - 1] = new Weapon(x, y, 80, fireblastImg, 10, 1);
+
             //weapon1_created = true;
             //player.state = "attack";
           }
           if (allPlayers[plr].chosen == "Incinerate") {
+
             weapons[index - 1] = new Weapon(x, y, 90, incinerateImg, 10, 0.5);
             weapons[index - 1].scale = 0.05;
+
             //player.state = "attack";
 
             //weapon1_created = true;
@@ -174,20 +202,26 @@ class Game {
           //player.weapon = weapon1;
 
           if (allPlayers[plr].chosen == "Fire Spin") {
-            weapons[index - 1] = new Weapon(x, y, 90, firespinImg, -10, 1);
+
+          weapons[index - 1] = new Weapon(x, y, 90, firespinImg, -10, 1);
             //player.state = "attack";
 
             // weapon2_created = true;
           }
           if (allPlayers[plr].chosen == "Flame Thrower") {
+
             weapons[index - 1] = new Weapon(x, y, 80, flamethrowerImg, -10, 1);
+
             //player.state = "attack";
 
             //weapon2_created = true;
           }
 
           if (allPlayers[plr].chosen == "Slash") {
+
+
             weapons[index - 1] = new Weapon(x, y, 60, slashImg, -10, 1);
+
             //player.state = "attack";
 
             // weapon2_created = true;
@@ -235,8 +269,11 @@ class Game {
     if (player.health <= 0) {
       // gameState = 2;
       this.update(2);
+
+      console.log(gameState);
       Player.updatePlayerAtEnd(player.index);
-      console.log("lossing Player" + player.index)
+      console.log("losing Player" + player.index);
+
     }
 
     drawSprites();
@@ -245,15 +282,19 @@ class Game {
   end() {
     console.log("Game Ended");
 
+    //background(0);
     if (playerAtEnd == 1) {
-      var bk = "bg_image/bg2.jpg";
-
-    } else {
-      var bk = "bg_image/bg1.jpg";
+      background(bg2Img);
+    } else if (playerAtEnd == 2) {
+      background(bg1Img);
     }
 
-    var backgroundimg = loadImage(bk);
-    background(backgroundimg);
+    // var backgroundimg = loadImage();
+
+
+   
+   
+
 
   }
   chooseWeapon() {
