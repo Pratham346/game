@@ -44,7 +44,7 @@ class Player {
       name: this.name,
       y: this.y,
       x: this.x,
-      health: this.health,
+     health: this.health,
       chosen: this.chosen,
       weaponActive: this.weaponActive,
       weaponX: this.weaponX,

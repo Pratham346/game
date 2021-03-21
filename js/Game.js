@@ -24,6 +24,8 @@ class Game {
       if (playerCountRef.exists()) {
         playerCount = playerCountRef.val();
         player.getCount();
+        textSize(20);
+
       }
       form = new Form();
       form.display();
@@ -39,6 +41,12 @@ class Game {
     weapon1 = null;
     weapon2 = null;
     weapons = [weapon1, weapon2];
+
+    stroke(20);
+    fill("black");
+    text("BY Pratham Banik", width / 2 + 450, height / 2 + 200);
+
+
   }
 
   play() {
@@ -56,7 +64,7 @@ class Game {
       fill("#3C961A");
       rect(0, height * 0.5, width, height * 4.5);
       pop();
-      image(bgImg, 0,0, width, height);
+      image(bgImg, 0, 0, width, height);
       var index = 0;
 
       //x and y position of the playerArray
@@ -78,15 +86,21 @@ class Game {
         playerArray[index - 1].x = x;
         playerArray[index - 1].y = y;
 
-        stroke(50);
+        textSize(20);
+        stroke("60");
         fill("white");
-        text(allPlayers[plr].health, x, y - 200);
-        text(allPlayers[plr].score, x, y - 250);
+        text(allPlayers[plr].health, x - 50, y - 200);
+
+        textSize(30);
+        stroke("80");
+        fill("black");
+        text(allPlayers[plr].name, x - 50, y - 250);
+
         if (index === player.index) {
           stroke(10);
           fill("red");
           rect(x, y, 5, 5);
-         
+
           player.health = allPlayers[plr].health;
           console.log(player.health);
           camera.position.x = displayWidth / 2;
@@ -123,7 +137,7 @@ class Game {
             weapons[player.index - 1].body.destroy();
             weapons[player.index - 1] = null;
             console.log("destroy weapon after hit");
-            player.updateEnemyHealth(index, health);
+            player.updateEnemyHealth(index, max(0, health));
             console.log("update" + health);
             player.state = "ready";
             player.weaponActive = false;
@@ -244,17 +258,9 @@ class Game {
 
   end() {
     console.log("Game Ended");
-
-    if (playerAtEnd == 1) {
-      var bk = "bg_image/bg2.jpg";
-
-    } else {
-      var bk = "bg_image/bg1.jpg";
-    }
-
-    var backgroundimg = loadImage(bk);
-    background(backgroundimg);
-
+    //background(0);
+    if (playerAtEnd == 1) { background(bg2Img); } else if (playerAtEnd == 2) { background(bg1Img); }
+    // var backgroundimg = loadImage(); 
   }
   chooseWeapon() {
     if (player.state === "ready") {
