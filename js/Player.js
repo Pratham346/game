@@ -1,7 +1,7 @@
 class Player {
   constructor() {
     this.index = null;
-    this.y = 0;
+    this.y = height/2;
     this.health = 350;
     this.name = null;
     this.weaponActive = false;

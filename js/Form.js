@@ -15,7 +15,10 @@ class Form {
 
   display() {
     this.title.html("The Pokemon Game");
-    this.title.position(displayWidth / 2 - 100, 0);
+    this.title.position(displayWidth / 2 - 200, 0);
+    this.title.style("font-size","50px");
+    this.title.style("color","balck");
+  
 
     this.input.position(displayWidth / 2 - 40, displayHeight / 2 - 80);
     this.button.position(displayWidth / 2 + 30, displayHeight / 2);
